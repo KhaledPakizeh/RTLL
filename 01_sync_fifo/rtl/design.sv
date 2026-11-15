@@ -18,7 +18,7 @@ module fifo
     logic [ADDRESS_WIDTH:0] r_ptr;
 
     // TODO: storage (memory array).
-    logic [ADDRESS_WIDTH-1:0] L_fifo [(1<<ADDRESS_WIDTH)]; 
+    logic [DATA_WIDTH-1:0] L_fifo [DEPTH]; 
 
     logic full,empty; 
     
@@ -28,31 +28,32 @@ module fifo
     // TODO: accepted-write and accepted-read conditions (what gates wr_en / rd_en?).
     always_ff @(posedge clk) begin 
         if(rst) begin
-            L_fifo <=0; 
             w_ptr  <=0;
             r_ptr  <=0; 
         end
 
         else begin
-            if(rd_enable && !empty) begin 
+            if(read_enable && !empty) begin 
                 d_out <= L_fifo[r_ptr[ADDRESS_WIDTH-1:0]]; 
             end 
-            if(wr_enable && !full) begin
+            if(write_enable && !full) begin
                 L_fifo[w_ptr[ADDRESS_WIDTH-1:0]] <= d_in; 
             end 
 
-            case ({rd_enable && !empty,wr_enable && !full})
-            2'b10: 
-            begin 
-                r_ptr <= r_ptr +1;  
-            end 
-            2'b01: 
-            begin
-                w_ptr <= w_ptr+1; 
-            end         
-            default: begin
-            end 
-            
+            case ({read_enable && !empty,write_enable && !full})
+                2'b10: 
+                begin 
+                    r_ptr <= r_ptr +1;  
+                end 
+                2'b01: 
+                begin
+                    w_ptr <= w_ptr+1; 
+                end         
+                2'b11: begin
+                    w_ptr <= w_ptr+1; 
+                    r_ptr <= r_ptr +1;  
+                end 
+            endcase 
         end
         
     end 
