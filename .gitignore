@@ -1,0 +1,12 @@
+work/
+*.wlf
+*.vcd
+transcript
+*.mti
+*.mpf
+db/
+incremental_db/
+output_files/
+*.qpf
+*.qsf
+*.rpt
