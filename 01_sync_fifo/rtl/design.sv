@@ -10,6 +10,7 @@ module fifo
     input logic [DATA_WIDTH-1:0] d_in, 
     output logic [DATA_WIDTH-1:0] d_out, 
     input logic clk,rst,read_enable,write_enable 
+    output logic full, empty; 
 );
     parameter DEPTH = (1 << ADDRESS_WIDTH); 
 
